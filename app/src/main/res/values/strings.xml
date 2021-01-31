@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SkyCatNews</string>
+    <string name="news_headline">News HeadLine</string>
+    <string name="story_headline_1">Story Headline 1</string>
+</resources>
