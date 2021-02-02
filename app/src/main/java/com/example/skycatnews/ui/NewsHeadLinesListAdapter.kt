@@ -13,8 +13,10 @@ import com.squareup.picasso.Picasso
 import java.util.*
 import kotlin.collections.ArrayList
 
-class NewsHeadLinesListAdapter(private val newsList: ArrayList<NewsHeadline>) : RecyclerView.Adapter<NewsHeadLinesListAdapter.NewsHolder>() {
+class NewsHeadLinesListAdapter() : RecyclerView.Adapter<NewsHeadLinesListAdapter.NewsHolder>() {
 
+
+    private var newsList: List<NewsHeadline> = emptyList<NewsHeadline>()
 
     private fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
         return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
@@ -33,8 +35,14 @@ class NewsHeadLinesListAdapter(private val newsList: ArrayList<NewsHeadline>) : 
         holder.time.text = getTime(newsHeadline.ModifiedDate)
         holder.desc.text = newsHeadline.teaserText
         if (newsHeadline.teaserImage._links.url.href.isNotEmpty()) {
-            Picasso.get().load(newsHeadline.teaserImage._links.url.href).placeholder(R.drawable.placeholder).into(holder.image)
+            Picasso.get().load(newsHeadline.teaserImage._links.url.href)
+                .placeholder(R.drawable.placeholder).into(holder.image)
         }
+    }
+
+    fun setAdapterList(list: List<NewsHeadline>) {
+        this.newsList = list
+        notifyDataSetChanged()
     }
 
     private fun getTime(modifiedDate: String): String {

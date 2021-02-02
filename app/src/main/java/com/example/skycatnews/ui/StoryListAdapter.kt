@@ -8,15 +8,18 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skycatnews.R
+import com.example.skycatnews.util.NewsHeadline
 import com.example.skycatnews.util.StoryContent
 import com.squareup.picasso.Picasso
 import kotlin.collections.ArrayList
 
-class StoryListAdapter(private val storyList: ArrayList<StoryContent>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class StoryListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     enum class StoryContentType(val type: String) {
         PARAGRAPH("paragraph"),
         IMAGE("image")
     }
+
+    private var storyList: List<StoryContent> = emptyList<StoryContent>()
 
 
     private fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
@@ -32,6 +35,11 @@ class StoryListAdapter(private val storyList: ArrayList<StoryContent>) : Recycle
 
     }
 
+    fun setAdapterList(list: List<StoryContent>) {
+        this.storyList = list
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount() = storyList.size
     override fun getItemViewType(position: Int): Int {
         return if (storyList[position].type == StoryContentType.PARAGRAPH.type) {
@@ -45,7 +53,8 @@ class StoryListAdapter(private val storyList: ArrayList<StoryContent>) : Recycle
         val storyContent = storyList[position]
         when (holder) {
             is StoryContentHolder -> holder.story_content.text = storyContent.text
-            is StoryImageHolder -> Picasso.get().load(storyContent.url).placeholder(R.drawable.image_placeholder).into(holder.story_Image)
+            is StoryImageHolder -> Picasso.get().load(storyContent.url)
+                .placeholder(R.drawable.image_placeholder).into(holder.story_Image)
         }
 
     }
