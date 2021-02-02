@@ -1,4 +1,4 @@
-package com.example.skycatnews.ui.main
+package com.example.skycatnews.ui
 
 import android.view.LayoutInflater
 import android.view.View
@@ -44,8 +44,8 @@ class StoryListAdapter(private val storyList: ArrayList<StoryContent>) : Recycle
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val storyContent = storyList[position]
         when (holder) {
-            is StoryContentHolder -> (holder as StoryContentHolder).story_content.text = storyContent.text
-            is StoryImageHolder -> Picasso.get().load(storyContent.url).placeholder(R.drawable.image_placeholder).into((holder as StoryImageHolder).story_Image)
+            is StoryContentHolder -> holder.story_content.text = storyContent.text
+            is StoryImageHolder -> Picasso.get().load(storyContent.url).placeholder(R.drawable.image_placeholder).into(holder.story_Image)
         }
 
     }

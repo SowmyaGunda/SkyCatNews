@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -45,4 +46,36 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.13.0"
+    ext.dagger2_version = '2.27'
+    ext.jUnitVersion = '4.12'
+    ext.testRunnerVersion = '1.1.1'
+    ext.extTestRunnerVersion = '1.1.0'
+    ext.mockWebServerVersion = '3.14.2'
+    ext.archCoreVersion = '1.1.1'
+    ext.espressoVersion = '3.1.1'
+    ext.mockKVersion = '1.9.3'
+    implementation "com.google.dagger:dagger:$dagger2_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger2_version"
+    implementation "com.google.dagger:dagger-android:$dagger2_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger2_version"
+    kapt "com.google.dagger:dagger-android-support:$dagger2_version"
+    //  to build TestComponent in test/ folder
+    kaptTest "com.google.dagger:dagger-compiler:$dagger2_version"
+
+    testImplementation "junit:junit:$jUnitVersion",
+            "android.arch.core:core-testing:$archCoreVersion"
+
+    androidTestImplementation "androidx.test.ext:junit:$extTestRunnerVersion",
+            "androidx.test:rules:$testRunnerVersion",
+            "androidx.test.espresso:espresso-core:$espressoVersion"
+
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:$mockWebServerVersion") {
+        exclude group: "com.squareup.okhttp3"
+    }
+
+    //  mockk
+    testImplementation "io.mockk:mockk:$mockKVersion"
 }

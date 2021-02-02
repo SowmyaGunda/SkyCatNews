@@ -1,4 +1,4 @@
-package com.example.skycatnews.ui.main
+package com.example.skycatnews.ui
 
 import android.view.LayoutInflater
 import android.view.View

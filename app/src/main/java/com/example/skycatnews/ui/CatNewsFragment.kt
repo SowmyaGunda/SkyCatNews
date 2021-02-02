@@ -1,4 +1,4 @@
-package com.example.skycatnews.ui.main
+package com.example.skycatnews.ui
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
