@@ -1,5 +1,6 @@
 package com.example.skycatnews.ui
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.example.skycatnews.viewmodel.StoryViewModel
 import com.example.skycatnews.viewmodel.ViewModelFactory
 import com.squareup.picasso.Picasso
 import androidx.lifecycle.Observer
+import com.example.skycatnews.viewmodel.CatNewsViewModel
 
 class StoryFragment : Fragment() {
 
@@ -27,18 +29,38 @@ class StoryFragment : Fragment() {
     private lateinit var imageView: ImageView
     private lateinit var headLine: TextView
     private lateinit var storyContent: RecyclerView
+    private val observable = Observer<StoryViewModel.NewsStoryResponse> {
+        when (it) {
+            it as StoryViewModel.NewsStoryResponse.Success -> updateUI(it.newsStory)
+            it as StoryViewModel.NewsStoryResponse.Failure -> showErrorDialog()
+        }
+    }
+
+    private fun showErrorDialog() {
+        val builder = AlertDialog.Builder(this.context)
+        builder.setTitle("Warning!!")
+        builder.setMessage("Something went wrong try again later")
+        builder.setNeutralButton("OK") { dialog, which ->
+
+        }
+        builder.show()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initViewModel()
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.story_fragment, container, false)
         storyContent = view.findViewById(R.id.story_list)
         imageView = view.findViewById(R.id.main_story_image)
         headLine = view.findViewById(R.id.story_head_line)
         initAdapter()
-        // initViewModel()
-        // fetchRetroInfo()
+        fetchRetroInfo()
         return view
     }
 
@@ -49,19 +71,19 @@ class StoryFragment : Fragment() {
     private fun initViewModel() {
         val retroViewModelFactory = ViewModelFactory()
         viewModel =
-            ViewModelProviders.of(this, retroViewModelFactory).get(StoryViewModel::class.java)
+                ViewModelProviders.of(this, retroViewModelFactory).get(StoryViewModel::class.java)
     }
 
     private fun fetchRetroInfo() {
-        viewModel.storyLiveData.observe(this,
-            Observer<NewsStory> { t ->
-                t?.apply {
-                    headLine.text = t.headline
-                    listAdapter.setAdapterList(t.contents)
-                    Picasso.get().load(t.hereImage.imageUrl)
-                        .placeholder(R.drawable.placeholder).into(imageView)
-                }
-            })
+        viewModel.storyLiveData.observe(this, observable)
+        viewModel.fetchStoryFromRepository()
+    }
+
+    private fun updateUI(newsStory: NewsStory) {
+        headLine.text = newsStory.headline
+        listAdapter.setAdapterList(newsStory.contents)
+        Picasso.get().load(newsStory.hereImage.imageUrl)
+                .placeholder(R.drawable.placeholder).into(imageView)
     }
 
 

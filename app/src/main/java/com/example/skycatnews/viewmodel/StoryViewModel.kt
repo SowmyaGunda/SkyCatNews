@@ -1,21 +1,47 @@
 package com.example.skycatnews.viewmodel
 
-import androidx.lifecycle.LiveData
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.skycatnews.model.RestApiClient.SkyCatNewsRepository
+import androidx.lifecycle.viewModelScope
+import com.example.skycatnews.model.restApiClient.SkyCatNewsRepository
 import com.example.skycatnews.util.NewsStory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.HttpException
+import retrofit2.Response
+import java.lang.Exception
 
 class StoryViewModel(retroFitRepository: SkyCatNewsRepository) : ViewModel() {
-    lateinit var retrofitRepository: SkyCatNewsRepository
-    var storyLiveData: LiveData<NewsStory> = MutableLiveData()
-
-    init {
-        this.retrofitRepository = retrofitRepository
-        fetchStoryFromRepository()
-    }
+    private val retrofitRepository: SkyCatNewsRepository = retroFitRepository
+    val storyLiveData: MutableLiveData<NewsStoryResponse> = MutableLiveData()
 
     fun fetchStoryFromRepository() {
-        storyLiveData = retrofitRepository.fetchNewsStory()
+        viewModelScope.launch(Dispatchers.IO) {
+            val story: Call<NewsStory> = retrofitRepository.fetchApiService().getStory()
+            story.enqueue(object : Callback<NewsStory> {
+                override fun onFailure(call: Call<NewsStory>, t: Throwable) {
+                    Log.d("SkyCatNewsRepository", "Failed:::" + t.message)
+                    storyLiveData.postValue(NewsStoryResponse.Failure(t as Exception))
+                }
+
+                override fun onResponse(call: Call<NewsStory>, response: Response<NewsStory>) {
+                    if (response.isSuccessful) {
+                        storyLiveData.postValue(NewsStoryResponse.Success(response.body()!!))
+
+                    } else {
+                        storyLiveData.postValue(NewsStoryResponse.Failure(HttpException(response)))
+                    }
+
+                }
+            })
+        }
+    }
+
+    sealed class NewsStoryResponse {
+        data class Success(val newsStory: NewsStory) : NewsStoryResponse()
+        data class Failure(val exception: Exception) : NewsStoryResponse()
     }
 }

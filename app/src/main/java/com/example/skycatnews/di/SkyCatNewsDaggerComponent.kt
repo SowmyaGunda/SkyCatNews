@@ -1,8 +1,8 @@
 package com.example.skycatnews.di
 
 import com.example.skycatnews.AppModule
-import com.example.skycatnews.model.RestApiClient.SkyCatNewsModule
-import com.example.skycatnews.model.RestApiClient.SkyCatNewsRepository
+import com.example.skycatnews.model.restApiClient.SkyCatNewsModule
+import com.example.skycatnews.model.restApiClient.SkyCatNewsRepository
 import com.example.skycatnews.ui.CatNewsFragment
 import com.example.skycatnews.ui.StoryFragment
 import com.example.skycatnews.viewmodel.CatNewsViewModel

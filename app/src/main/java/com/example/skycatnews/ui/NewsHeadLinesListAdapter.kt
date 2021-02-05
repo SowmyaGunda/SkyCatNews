@@ -32,7 +32,7 @@ class NewsHeadLinesListAdapter() : RecyclerView.Adapter<NewsHeadLinesListAdapter
     override fun onBindViewHolder(holder: NewsHolder, position: Int) {
         val newsHeadline: NewsHeadline = newsList[position]
         holder.header.text = newsHeadline.headline
-        holder.time.text = getTime(newsHeadline.ModifiedDate)
+        holder.time.text = getTime(newsHeadline.modifiedDate)
         holder.desc.text = newsHeadline.teaserText
         if (newsHeadline.teaserImage._links.url.href.isNotEmpty()) {
             Picasso.get().load(newsHeadline.teaserImage._links.url.href)
@@ -45,9 +45,9 @@ class NewsHeadLinesListAdapter() : RecyclerView.Adapter<NewsHeadLinesListAdapter
         notifyDataSetChanged()
     }
 
-    private fun getTime(modifiedDate: String): String {
+    private fun getTime(modifiedDate: Date): String {
         val currentDate = Date()
-        val diff: Long = currentDate.time - Date(modifiedDate).time
+        val diff: Long = currentDate.time - modifiedDate.time
         val seconds = diff / 1000
         val minutes = seconds / 60
         val hours = minutes / 60

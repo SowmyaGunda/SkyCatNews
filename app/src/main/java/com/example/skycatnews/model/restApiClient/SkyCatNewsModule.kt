@@ -1,4 +1,4 @@
-package com.example.skycatnews.model.RestApiClient
+package com.example.skycatnews.model.restApiClient
 
 import dagger.Module
 import dagger.Provides
@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Module
 open class SkyCatNewsModule {
     companion object {
-        const val DEFAULT_API_URL = ""
+        const val DEFAULT_API_URL = "https://488576ec-9ce3-4f09-9a86-6f5685fd507a.mock.pstmn.io"
         const val TIMEOUT: Long = 3000 // ms
 
     }
@@ -20,9 +20,9 @@ open class SkyCatNewsModule {
     @Provides
     open fun provideOKHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .readTimeout(TIMEOUT, TimeUnit.SECONDS)
-            .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
-            .build()
+                .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .build()
 
     }
 
@@ -35,18 +35,19 @@ open class SkyCatNewsModule {
     @Singleton
     @Provides
     open fun provideRetrofit(
-        gsonConverterFactory: GsonConverterFactory,
-        okHttpClient: OkHttpClient
+            gsonConverterFactory: GsonConverterFactory,
+            okHttpClient: OkHttpClient
     ): Retrofit {
 
         return Retrofit.Builder()
-            .baseUrl(DEFAULT_API_URL)
-            .addConverterFactory(gsonConverterFactory)
-            .client(okHttpClient)
-            .build()
+                .baseUrl(DEFAULT_API_URL)
+                .addConverterFactory(gsonConverterFactory)
+                .client(okHttpClient)
+                .build()
     }
+
     @Provides
-    fun provideRetroRepository():SkyCatNewsRepository{
+    fun provideRetroRepository(): SkyCatNewsRepository {
         return SkyCatNewsRepository()
     }
 

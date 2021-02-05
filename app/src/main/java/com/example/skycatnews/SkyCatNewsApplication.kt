@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.example.skycatnews.di.DaggerSkyCatNewsDaggerComponent
 import com.example.skycatnews.di.SkyCatNewsDaggerComponent
-import com.example.skycatnews.model.RestApiClient.SkyCatNewsModule
+import com.example.skycatnews.model.restApiClient.SkyCatNewsModule
 
 class SkyCatNewsApplication : Application(){
     companion object {

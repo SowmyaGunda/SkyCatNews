@@ -1,4 +1,4 @@
-package com.example.skycatnews.model.RestApiClient
+package com.example.skycatnews.model.restApiClient
 
 import com.example.skycatnews.util.CatNews
 import com.example.skycatnews.util.NewsStory
