@@ -46,9 +46,4 @@ open class SkyCatNewsModule {
                 .build()
     }
 
-    @Provides
-    fun provideRetroRepository(): SkyCatNewsRepository {
-        return SkyCatNewsRepository()
-    }
-
 }

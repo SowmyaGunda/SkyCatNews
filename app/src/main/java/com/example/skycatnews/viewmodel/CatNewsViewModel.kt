@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.skycatnews.model.retrofit.SkyCatNewsRepository
 import com.example.skycatnews.model.data.CatNews
+import com.example.skycatnews.model.retrofit.SkyCatNewsApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -14,13 +14,13 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.lang.Exception
 
-class CatNewsViewModel(retroFitRepository: SkyCatNewsRepository) : ViewModel() {
-    private val retrofitRepository: SkyCatNewsRepository = retroFitRepository
+class CatNewsViewModel(apiService: SkyCatNewsApiService) : ViewModel() {
+    private val skyCatNewsApiService: SkyCatNewsApiService = apiService
     val newsLiveData: MutableLiveData<NewsListResponse> = MutableLiveData()
 
     fun fetchCatNewsFromRepository() {
         viewModelScope.launch(Dispatchers.IO) {
-            val newsListInfo: Call<CatNews> = retrofitRepository.fetchApiService().getNewsList()
+            val newsListInfo: Call<CatNews> = skyCatNewsApiService.getNewsList()
             newsListInfo.enqueue(object : Callback<CatNews> {
                 override fun onFailure(call: Call<CatNews>, t: Throwable) {
                     Log.d("SkyCatNewsRepository", "Failed:::" + t.message)

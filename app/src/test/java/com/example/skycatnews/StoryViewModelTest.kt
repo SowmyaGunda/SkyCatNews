@@ -2,22 +2,18 @@ package com.example.skycatnews
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.skycatnews.model.retrofit.SkyCatNewsApiService
-import com.example.skycatnews.viewmodel.CatNewsViewModel
+import com.example.skycatnews.viewmodel.StoryViewModel
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.*
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-import retrofit2.Retrofit
 
 
 @RunWith(MockitoJUnitRunner::class)
-class CatNewsViewModelTest {
+class StoryViewModelTest {
     @Rule
     @JvmField
     var rule = InstantTaskExecutorRule()
@@ -26,20 +22,18 @@ class CatNewsViewModelTest {
     lateinit var apiService: SkyCatNewsApiService
 
 
-
-
-    lateinit var catNewsViewModel: CatNewsViewModel
+    lateinit var storyViewModel: StoryViewModel
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        catNewsViewModel = CatNewsViewModel(apiService)
+        storyViewModel = StoryViewModel(apiService)
     }
 
     @Test
-    fun verifyApiInvoking(){
-        catNewsViewModel.fetchCatNewsFromRepository()
-        verify(apiService).getNewsList()
+    fun verifyApiInvoking() {
+        storyViewModel.fetchStoryFromRepository("1")
+        verify(apiService).getStory("1")
     }
 
 }
