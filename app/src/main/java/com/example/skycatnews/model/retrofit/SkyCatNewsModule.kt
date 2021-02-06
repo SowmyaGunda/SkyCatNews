@@ -1,4 +1,4 @@
-package com.example.skycatnews.model.restApiClient
+package com.example.skycatnews.model.retrofit
 
 import dagger.Module
 import dagger.Provides
@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Module
 open class SkyCatNewsModule {
     companion object {
-        const val DEFAULT_API_URL = "https://488576ec-9ce3-4f09-9a86-6f5685fd507a.mock.pstmn.io"
+        const val DEFAULT_API_URL = "https://5b76e458-8714-4eba-9acd-032272e82913.mock.pstmn.io"
         const val TIMEOUT: Long = 3000 // ms
 
     }

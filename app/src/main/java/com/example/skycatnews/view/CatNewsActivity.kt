@@ -1,4 +1,4 @@
-package com.example.skycatnews.ui
+package com.example.skycatnews.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

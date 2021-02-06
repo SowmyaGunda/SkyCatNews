@@ -1,24 +1,30 @@
-package com.example.skycatnews.ui
+package com.example.skycatnews.view
 
 import android.app.AlertDialog
+import android.app.ProgressDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skycatnews.R
-import com.example.skycatnews.util.CatNews
+import com.example.skycatnews.model.data.CatNews
 import com.example.skycatnews.viewmodel.CatNewsViewModel
 import com.example.skycatnews.viewmodel.ViewModelFactory
 import com.squareup.picasso.Picasso
 import java.util.*
 
-class CatNewsFragment : Fragment() {
+
+class CatNewsFragment : Fragment(), NewsHeadLinesListAdapter.OnItemClicked {
 
     companion object {
         fun newInstance() = CatNewsFragment()
@@ -32,12 +38,12 @@ class CatNewsFragment : Fragment() {
     private lateinit var latestTeaser: TextView
     private lateinit var imageView: ImageView
     private lateinit var time: TextView
+    private lateinit var loadingDialog: AlertDialog;
 
     private val observable = Observer<CatNewsViewModel.NewsListResponse> {
-        when(it){
-            it as CatNewsViewModel.NewsListResponse.Success -> updateUI(it.catNews)
-            it as CatNewsViewModel.NewsListResponse.Failure -> showErrorDialog()
-        }
+        if (it is CatNewsViewModel.NewsListResponse.Success) updateUI(it.catNews)
+        else if (it is CatNewsViewModel.NewsListResponse.Failure) showErrorDialog()
+        cancelLoading()
     }
 
     private fun showErrorDialog() {
@@ -48,6 +54,18 @@ class CatNewsFragment : Fragment() {
 
         }
         builder.show()
+    }
+
+    private fun cancelLoading() {
+        loadingDialog.dismiss()
+    }
+
+    private fun showLoading() {
+        loadingDialog = ProgressDialog(context)
+        loadingDialog.setMessage("Loding..")
+        loadingDialog.setCancelable(false)
+        loadingDialog.setInverseBackgroundForced(false)
+        loadingDialog.show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +84,7 @@ class CatNewsFragment : Fragment() {
         latestheadLine = view.findViewById(R.id.latest_headline)
         time = view.findViewById(R.id.time)
         imageView = view.findViewById(R.id.main_story_image)
+
         initAdapter()
         fetchRetroInfo()
         return view
@@ -77,6 +96,7 @@ class CatNewsFragment : Fragment() {
     }
 
     private fun fetchRetroInfo() {
+        showLoading()
         viewModel.newsLiveData.observe(this, observable)
         viewModel.fetchCatNewsFromRepository()
     }
@@ -86,9 +106,16 @@ class CatNewsFragment : Fragment() {
         latestheadLine.text = catNews.data[0].headline
         latestTeaser.text = catNews.data[0].teaserText
         time.text = getTime(catNews.data[0].modifiedDate)
-        listAdapter?.setAdapterList(catNews.data)
-        /*Picasso.get().load(catNews.newsHeadline[0].teaserImage._links.url.href)
-            .placeholder(R.drawable.placeholder).into(imageView)*/
+        val layoutManager = LinearLayoutManager(context)
+        storyList.layoutManager = layoutManager
+        val dividerItemDecoration = DividerItemDecoration(context,
+                layoutManager.orientation)
+        storyList.addItemDecoration(dividerItemDecoration)
+        listAdapter.setAdapterList(catNews.data)
+        if (catNews.data[0].teaserImage._links.url.href.isNotEmpty()) {
+            Picasso.get().load(catNews.data[0].teaserImage._links.url.href)
+                    .placeholder(R.drawable.placeholder).into(imageView)
+        }
     }
 
     private fun getTime(modifiedDate: Date): String {
@@ -108,8 +135,35 @@ class CatNewsFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        listAdapter = NewsHeadLinesListAdapter()
+        listAdapter = NewsHeadLinesListAdapter(this)
         storyList.adapter = listAdapter
+    }
+
+    override fun onStoryType(id: String) {
+        var storyFragment: StoryFragment = StoryFragment.newInstance()
+        val args = Bundle()
+        args.putString("id", id)
+        storyFragment.setArguments(args)
+        activity?.supportFragmentManager
+                ?.beginTransaction()
+                ?.replace(R.id.container, storyFragment)?.addToBackStack("crop_type")
+                ?.commit()
+    }
+
+    override fun onWebLinkType(url: String) {
+        var webUrl = url
+        if (!webUrl.startsWith("http://") && !webUrl.startsWith("https://"))
+            webUrl = "http://$webUrl"
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(webUrl))
+        context?.startActivity(browserIntent)
+    }
+
+    override fun onAd(url: String) {
+        var adUrl = url
+        if (!adUrl.startsWith("http://") && !adUrl.startsWith("https://"))
+            adUrl = "http://$adUrl"
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(adUrl))
+        context?.startActivity(browserIntent)
     }
 
 

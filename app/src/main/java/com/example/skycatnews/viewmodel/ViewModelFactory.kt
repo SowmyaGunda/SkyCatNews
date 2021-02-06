@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.skycatnews.di.DaggerSkyCatNewsDaggerComponent
 import com.example.skycatnews.di.SkyCatNewsDaggerComponent
-import com.example.skycatnews.model.restApiClient.SkyCatNewsModule
-import com.example.skycatnews.model.restApiClient.SkyCatNewsRepository
+import com.example.skycatnews.model.retrofit.SkyCatNewsModule
+import com.example.skycatnews.model.retrofit.SkyCatNewsRepository
 import javax.inject.Inject
 
 class ViewModelFactory : ViewModelProvider.Factory {

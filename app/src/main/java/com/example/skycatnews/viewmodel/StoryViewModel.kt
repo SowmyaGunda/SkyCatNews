@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.skycatnews.model.restApiClient.SkyCatNewsRepository
-import com.example.skycatnews.util.NewsStory
+import com.example.skycatnews.model.retrofit.SkyCatNewsRepository
+import com.example.skycatnews.model.data.NewsStory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -18,9 +18,9 @@ class StoryViewModel(retroFitRepository: SkyCatNewsRepository) : ViewModel() {
     private val retrofitRepository: SkyCatNewsRepository = retroFitRepository
     val storyLiveData: MutableLiveData<NewsStoryResponse> = MutableLiveData()
 
-    fun fetchStoryFromRepository() {
+    fun fetchStoryFromRepository(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val story: Call<NewsStory> = retrofitRepository.fetchApiService().getStory()
+            val story: Call<NewsStory> = retrofitRepository.fetchApiService().getStory(id)
             story.enqueue(object : Callback<NewsStory> {
                 override fun onFailure(call: Call<NewsStory>, t: Throwable) {
                     Log.d("SkyCatNewsRepository", "Failed:::" + t.message)

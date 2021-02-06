@@ -1,10 +1,10 @@
 package com.example.skycatnews.di
 
 import com.example.skycatnews.AppModule
-import com.example.skycatnews.model.restApiClient.SkyCatNewsModule
-import com.example.skycatnews.model.restApiClient.SkyCatNewsRepository
-import com.example.skycatnews.ui.CatNewsFragment
-import com.example.skycatnews.ui.StoryFragment
+import com.example.skycatnews.model.retrofit.SkyCatNewsModule
+import com.example.skycatnews.model.retrofit.SkyCatNewsRepository
+import com.example.skycatnews.view.CatNewsFragment
+import com.example.skycatnews.view.StoryFragment
 import com.example.skycatnews.viewmodel.CatNewsViewModel
 import com.example.skycatnews.viewmodel.ViewModelFactory
 import dagger.Component

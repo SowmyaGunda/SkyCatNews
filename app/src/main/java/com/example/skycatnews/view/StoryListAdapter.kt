@@ -1,4 +1,4 @@
-package com.example.skycatnews.ui
+package com.example.skycatnews.view
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +8,8 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skycatnews.R
-import com.example.skycatnews.util.NewsHeadline
-import com.example.skycatnews.util.StoryContent
+import com.example.skycatnews.model.data.StoryContent
 import com.squareup.picasso.Picasso
-import kotlin.collections.ArrayList
 
 class StoryListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     enum class StoryContentType(val type: String) {
@@ -53,8 +51,11 @@ class StoryListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val storyContent = storyList[position]
         when (holder) {
             is StoryContentHolder -> holder.story_content.text = storyContent.text
-            is StoryImageHolder -> Picasso.get().load(storyContent.url)
-                .placeholder(R.drawable.image_placeholder).into(holder.story_Image)
+            is StoryImageHolder -> {
+                if (storyContent.url.isNotEmpty())
+                    Picasso.get().load(storyContent.url)
+                            .placeholder(R.drawable.image_placeholder).into(holder.story_Image)
+            }
         }
 
     }

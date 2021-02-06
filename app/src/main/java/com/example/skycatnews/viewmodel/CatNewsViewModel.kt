@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.skycatnews.model.restApiClient.SkyCatNewsRepository
-import com.example.skycatnews.util.CatNews
+import com.example.skycatnews.model.retrofit.SkyCatNewsRepository
+import com.example.skycatnews.model.data.CatNews
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call

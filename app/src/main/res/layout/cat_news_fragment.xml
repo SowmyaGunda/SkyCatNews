@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CatNewsFragment">
+    tools:context=".view.CatNewsFragment">
 
     <TextView
         android:id="@+id/news_head_line"
@@ -63,8 +63,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/story_headline_1"
-            android:textSize="20sp"
-            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textColor="#D3D3D3"
             />
 
     </LinearLayout>
@@ -78,6 +78,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_story"
+        android:scrollbars="vertical"
         />
 
 

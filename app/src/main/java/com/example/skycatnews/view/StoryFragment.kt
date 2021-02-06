@@ -1,22 +1,24 @@
-package com.example.skycatnews.ui
+package com.example.skycatnews.view
 
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skycatnews.R
-import com.example.skycatnews.util.NewsStory
+import com.example.skycatnews.model.data.NewsStory
 import com.example.skycatnews.viewmodel.StoryViewModel
 import com.example.skycatnews.viewmodel.ViewModelFactory
 import com.squareup.picasso.Picasso
-import androidx.lifecycle.Observer
-import com.example.skycatnews.viewmodel.CatNewsViewModel
+
 
 class StoryFragment : Fragment() {
 
@@ -29,11 +31,12 @@ class StoryFragment : Fragment() {
     private lateinit var imageView: ImageView
     private lateinit var headLine: TextView
     private lateinit var storyContent: RecyclerView
+    private lateinit var loadingDialog: AlertDialog;
     private val observable = Observer<StoryViewModel.NewsStoryResponse> {
-        when (it) {
-            it as StoryViewModel.NewsStoryResponse.Success -> updateUI(it.newsStory)
-            it as StoryViewModel.NewsStoryResponse.Failure -> showErrorDialog()
-        }
+        if (it is StoryViewModel.NewsStoryResponse.Success) {
+            updateUI(it.newsStory)
+        } else if (it is StoryViewModel.NewsStoryResponse.Failure) showErrorDialog()
+        cancelLoading()
     }
 
     private fun showErrorDialog() {
@@ -44,6 +47,18 @@ class StoryFragment : Fragment() {
 
         }
         builder.show()
+    }
+
+    private fun showLoading() {
+        loadingDialog = ProgressDialog(context)
+        loadingDialog.setMessage("Loading..")
+        loadingDialog.setCancelable(false)
+        loadingDialog.setInverseBackgroundForced(false)
+        loadingDialog.show()
+    }
+
+    private fun cancelLoading() {
+        loadingDialog.dismiss()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +75,7 @@ class StoryFragment : Fragment() {
         imageView = view.findViewById(R.id.main_story_image)
         headLine = view.findViewById(R.id.story_head_line)
         initAdapter()
-        fetchRetroInfo()
+        arguments?.getString("id")?.let { fetchRetroInfo(it) }
         return view
     }
 
@@ -74,23 +89,27 @@ class StoryFragment : Fragment() {
                 ViewModelProviders.of(this, retroViewModelFactory).get(StoryViewModel::class.java)
     }
 
-    private fun fetchRetroInfo() {
+    private fun fetchRetroInfo(id: String) {
+        showLoading()
         viewModel.storyLiveData.observe(this, observable)
-        viewModel.fetchStoryFromRepository()
+        viewModel.fetchStoryFromRepository(id)
     }
 
     private fun updateUI(newsStory: NewsStory) {
         headLine.text = newsStory.headline
+        val layoutManager = LinearLayoutManager(context)
+        storyContent.layoutManager = layoutManager
         listAdapter.setAdapterList(newsStory.contents)
-        Picasso.get().load(newsStory.hereImage.imageUrl)
-                .placeholder(R.drawable.placeholder).into(imageView)
+        if (newsStory.heroImage.imageUrl.isNotEmpty()) {
+            Picasso.get().load(newsStory.heroImage.imageUrl)
+                    .placeholder(R.drawable.placeholder).into(imageView)
+        }
     }
 
 
     private fun initAdapter() {
         listAdapter = StoryListAdapter()
         storyContent.adapter = listAdapter
-
     }
 
 }

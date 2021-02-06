@@ -1,4 +1,4 @@
-package com.example.skycatnews.util
+package com.example.skycatnews.model.data
 
 import java.util.*
 import kotlin.collections.ArrayList
@@ -11,4 +11,4 @@ data class TeaserImageLinks(val url: TeaserImageUrl)
 
 data class TeaserImage(val _links: TeaserImageLinks, val accessibilityText: String)
 
-data class NewsHeadline(val id: Int, val type: String, val headline: String, val teaserText: String, val creationDate: Date, val modifiedDate: Date, val teaserImage: TeaserImage, val weblinkUrl: String,val url:String)
+data class NewsHeadline(val id: String, val type: String, val headline: String, val teaserText: String, val creationDate: Date, val modifiedDate: Date, val teaserImage: TeaserImage, val weblinkUrl: String, val url:String)
