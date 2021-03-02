@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skycatnews.R
 import com.example.skycatnews.model.data.CatNews
+import com.example.skycatnews.model.data.StoryType
+import com.example.skycatnews.model.image.ImageLoader
 import com.example.skycatnews.viewmodel.CatNewsViewModel
 import com.example.skycatnews.viewmodel.ViewModelFactory
 import com.squareup.picasso.Picasso
@@ -103,24 +105,22 @@ class CatNewsFragment : Fragment(), NewsHeadLinesListAdapter.OnItemClicked {
 
     private fun updateUI(catNews: CatNews) {
         newsheadLine.text = catNews.title
-        latestheadLine.text = catNews.data[0].headline
-        latestTeaser.text = catNews.data[0].teaserText
-        time.text = getTime(catNews.data[0].modifiedDate)
         val layoutManager = LinearLayoutManager(context)
         storyList.layoutManager = layoutManager
         val dividerItemDecoration = DividerItemDecoration(context,
                 layoutManager.orientation)
         storyList.addItemDecoration(dividerItemDecoration)
         listAdapter.setAdapterList(catNews.data)
-        if (catNews.data[0].teaserImage._links.url.href.isNotEmpty()) {
-            Picasso.get().load(catNews.data[0].teaserImage._links.url.href)
-                    .placeholder(R.drawable.placeholder).into(imageView)
-        }
+        val storyContent = catNews.data[0] as StoryType
+        latestheadLine.text = storyContent.headline
+        latestTeaser.text = storyContent.teaserText
+        //time.text = getTime(storyContent.modifiedDate)
+        ImageLoader.loadImage(storyContent.teaserImage.imageUrl, imageView)
     }
 
-    private fun getTime(modifiedDate: Date): String {
+    private fun getTime(modifiedDate: String): String {
         val currentDate = Date()
-        val diff: Long = currentDate.time - modifiedDate.time
+        val diff: Long = currentDate.time - Date(modifiedDate).time
         val seconds = diff / 1000
         val minutes = seconds / 60
         val hours = minutes / 60
@@ -152,7 +152,9 @@ class CatNewsFragment : Fragment(), NewsHeadLinesListAdapter.OnItemClicked {
 
     override fun onWebLinkType(url: String) {
         var webUrl = url
-        if (!webUrl.startsWith("http://") && !webUrl.startsWith("https://"))
+        if (webUrl.isEmpty()) {
+            webUrl = "https://www.google.com/"
+        } else if (!webUrl.startsWith("http://") && !webUrl.startsWith("https://"))
             webUrl = "http://$webUrl"
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(webUrl))
         context?.startActivity(browserIntent)
@@ -160,11 +162,12 @@ class CatNewsFragment : Fragment(), NewsHeadLinesListAdapter.OnItemClicked {
 
     override fun onAd(url: String) {
         var adUrl = url
-        if (!adUrl.startsWith("http://") && !adUrl.startsWith("https://"))
+        if (adUrl.isEmpty()) {
+            adUrl = "https://www.google.com/"
+        } else if (!adUrl.startsWith("http://") && !adUrl.startsWith("https://"))
             adUrl = "http://$adUrl"
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(adUrl))
         context?.startActivity(browserIntent)
     }
-
 
 }

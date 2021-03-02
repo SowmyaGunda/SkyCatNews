@@ -8,16 +8,19 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skycatnews.R
-import com.example.skycatnews.model.data.StoryContent
-import com.squareup.picasso.Picasso
+import com.example.skycatnews.model.data.NewsStory
+import com.example.skycatnews.model.data.StoryContentType
+import com.example.skycatnews.model.data.StoryContentTypeTypeImage
+import com.example.skycatnews.model.data.StoryContentTypeTypeParagraph
+import com.example.skycatnews.model.image.ImageLoader
 
 class StoryListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    enum class StoryContentType(val type: String) {
+    enum class ContentType(val type: String) {
         PARAGRAPH("paragraph"),
         IMAGE("image")
     }
 
-    private var storyList: List<StoryContent> = emptyList<StoryContent>()
+    private var storyList: List<StoryContentType> = emptyList()
 
 
     private fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
@@ -25,7 +28,7 @@ class StoryListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == StoryContentType.PARAGRAPH.ordinal) {
+        return if (viewType == ContentType.PARAGRAPH.ordinal) {
             StoryContentHolder(parent.inflate(R.layout.story_item_paragraph))
         } else {
             StoryImageHolder(parent.inflate(R.layout.story_item_image))
@@ -33,28 +36,26 @@ class StoryListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     }
 
-    fun setAdapterList(list: List<StoryContent>) {
+    fun setAdapterList(list: List<StoryContentType>) {
         this.storyList = list
         notifyDataSetChanged()
     }
 
     override fun getItemCount() = storyList.size
     override fun getItemViewType(position: Int): Int {
-        return if (storyList[position].type == StoryContentType.PARAGRAPH.type) {
-            StoryContentType.PARAGRAPH.ordinal
+        return if (storyList[position].type == ContentType.PARAGRAPH.type) {
+            ContentType.PARAGRAPH.ordinal
         } else {
-            StoryContentType.IMAGE.ordinal
+            ContentType.IMAGE.ordinal
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val storyContent = storyList[position]
         when (holder) {
-            is StoryContentHolder -> holder.story_content.text = storyContent.text
+            is StoryContentHolder -> holder.story_content.text = (storyContent as StoryContentTypeTypeParagraph).text
             is StoryImageHolder -> {
-                if (storyContent.url.isNotEmpty())
-                    Picasso.get().load(storyContent.url)
-                            .placeholder(R.drawable.image_placeholder).into(holder.story_Image)
+                ImageLoader.loadImage((storyContent as StoryContentTypeTypeImage).url, holder.story_Image)
             }
         }
 

@@ -1,9 +1,8 @@
 package com.example.skycatnews.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.*
 import com.example.skycatnews.model.data.CatNews
 import com.example.skycatnews.model.retrofit.SkyCatNewsApiService
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +14,8 @@ import retrofit2.Response
 import java.lang.Exception
 
 class CatNewsViewModel(apiService: SkyCatNewsApiService) : ViewModel() {
-    private val skyCatNewsApiService: SkyCatNewsApiService = apiService
+    @VisibleForTesting
+    var skyCatNewsApiService: SkyCatNewsApiService = apiService
     val newsLiveData: MutableLiveData<NewsListResponse> = MutableLiveData()
 
     fun fetchCatNewsFromRepository() {
@@ -23,7 +23,7 @@ class CatNewsViewModel(apiService: SkyCatNewsApiService) : ViewModel() {
             val newsListInfo: Call<CatNews> = skyCatNewsApiService.getNewsList()
             newsListInfo.enqueue(object : Callback<CatNews> {
                 override fun onFailure(call: Call<CatNews>, t: Throwable) {
-                    Log.d("SkyCatNewsRepository", "Failed:::" + t.message)
+                    Log.d("CatNewsViewModel", "Failed:::" + t.message)
                     newsLiveData.postValue(NewsListResponse.Failure(t as Exception))
                 }
 

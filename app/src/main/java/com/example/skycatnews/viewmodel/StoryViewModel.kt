@@ -23,7 +23,7 @@ class StoryViewModel(apiService: SkyCatNewsApiService) : ViewModel() {
             val story: Call<NewsStory> = skyCatNewsApiService.getStory(id)
             story.enqueue(object : Callback<NewsStory> {
                 override fun onFailure(call: Call<NewsStory>, t: Throwable) {
-                    Log.d("SkyCatNewsRepository", "Failed:::" + t.message)
+                    Log.d("StoryViewModel", "Failed:::" + t.message)
                     storyLiveData.postValue(NewsStoryResponse.Failure(t as Exception))
                 }
 

@@ -1,10 +1,10 @@
 package com.example.skycatnews.model.data
 
-import java.util.*
+import kotlinx.serialization.Serializable
 import kotlin.collections.ArrayList
 
-data class NewsStory(val id: String, val headline: String, val heroImage: HeroImage, val creationDate: Date, val modifiedDateDate: Date, val contents: ArrayList<StoryContent>)
+@Serializable
+data class NewsStory(val id: String, val headline: String, val heroImage: HeroImage, val creationDate: String, val modifiedDate: String, val contents: ArrayList<StoryContentType>)
 
-data class HeroImage(val imageUrl: String, val accessbilityText: String)
-
-data class StoryContent(val type: String, val text: String, val url: String, val accesibilityText: String)
+@Serializable
+data class HeroImage(val imageUrl: String, val accessibilityText: String)
